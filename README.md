@@ -52,4 +52,5 @@ dependencies {
 串口操作类
 可枚举所有设备串口
 
-
+## License
+Apache2.0
