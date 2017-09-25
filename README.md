@@ -52,5 +52,7 @@ dependencies {
 串口操作类
 可枚举所有设备串口
 
+<a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=fe261afcf91e31f976ec47fc74c5cc0e1d29843423849dafd78967807aca9f92"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="Rair修仙开发交流" title="Rair修仙开发交流"></a>
+
 ## License
 Apache2.0
