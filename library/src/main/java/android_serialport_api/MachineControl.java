@@ -3,6 +3,7 @@ package android_serialport_api;
 import android.util.Log;
 
 import com.rair.serialport.ByteUtil;
+import com.rair.serialport.OnDataReceiverListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +12,9 @@ import java.io.OutputStream;
 
 public class MachineControl {
 
-    private static SerialPortFinder mSerialPortFinder = new SerialPortFinder();
+    private static final String TAG = "MachineControl";
+
+    private SerialPortFinder mSerialPortFinder;
 
     private String mDeviceName;
     private int mBaudRate;
@@ -21,112 +24,141 @@ public class MachineControl {
     private InputStream mInputStream;
     private ReadCOMThread mReadCOMThread;
 
-    // 枚举所有串口的设备名。
-    public static String[] getCOMList() {
+    private OnDataReceiverListener onDataReceiverListener;
+
+    /**
+     * 机器控制
+     *
+     * @param devName  串口设备名
+     * @param baudRate 波特率
+     *                 <p>
+     *                 例如 devName = "/dev/ttyS3"，baudRate =9600。
+     */
+    public MachineControl(String devName, int baudRate) {
+        mSerialPortFinder = new SerialPortFinder();
+        mDeviceName = devName;
+        mBaudRate = baudRate;
+        mSerialPort = null;
+    }
+
+    /**
+     * 枚举所有串口的设备名。
+     *
+     * @return 串口的设备名数组
+     */
+    private String[] getCOMList() {
         return mSerialPortFinder.getAllDevicesPath();
     }
 
-    // sample devName = "/dev/ttyS3"，baudRate = 9600。
-    public MachineControl(String devName, int baudRate) {
-        this.mDeviceName = devName;
-        this.mBaudRate = baudRate;
-        this.mSerialPort = null;
-    }
-
-    // 打开串口
+    /**
+     * 打开串口
+     *
+     * @return 是否成功
+     */
     public boolean openCOM() {
-        Log.i("MachineControl", "openCOM");
         String[] comList = getCOMList();
         for (String comname : comList) {
-            System.out.println(comname);
+            Log.i(TAG, "所有串口设备名" + comname);
         }
-        if (this.mSerialPort == null) {
+        if (mSerialPort == null) {
             try {
-                System.out.println("设备名：" + mDeviceName + ",波特率:" + mBaudRate);
-                this.mSerialPort = new SerialPort(new File(mDeviceName), mBaudRate, 0);
-                this.mOutputStream = mSerialPort.getOutputStream();
-                this.mInputStream = mSerialPort.getInputStream();
-                mReadCOMThread = new ReadCOMThread();// 读取串口数据
-                mReadCOMThread.setName("Machine.ReadCOMThread");
+                mSerialPort = new SerialPort(new File(mDeviceName), mBaudRate, 0);
+                mOutputStream = mSerialPort.getOutputStream();
+                mInputStream = mSerialPort.getInputStream();
+                // 开启读取串口数据线程
+                mReadCOMThread = new ReadCOMThread();
                 mReadCOMThread.start();
                 return true;
             } catch (Exception e) {
-                e.printStackTrace();
-                this.mSerialPort = null;
+                Log.i(TAG, e.getMessage());
+                mSerialPort = null;
             }
         }
         return false;
+    }
+
+    /**
+     * 设置回调监听
+     *
+     * @param onDataReceiverListener onDataReceiverListener
+     */
+    public void setOnDataReceiverListener(OnDataReceiverListener onDataReceiverListener) {
+        this.onDataReceiverListener = onDataReceiverListener;
     }
 
     /**
      * 关闭串口
      */
     public void closeCOM() {
-        Log.i("MachineControl", "closeCOM");
-        if (this.mSerialPort != null) {
+        if (mSerialPort != null) {
             mReadCOMThread.interrupt();
-            this.mSerialPort.closeIOStream();
-            this.mSerialPort.close();
-            this.mSerialPort = null;
+            mSerialPort.closeIOStream();
+            mSerialPort.close();
+            mSerialPort = null;
         }
     }
 
-    private int retryCount = 3; //重试次数
-
-
-    private String Res = "";
+    /**
+     * 解析后的结果
+     */
+    private String result;
 
     /**
      * 发送报文
      *
-     * @param TOut 重试次数
      * @param data 报文
-     * @return
+     * @return 是否成功
      */
-    private boolean sendCMD(int TOut, byte[] data) {
-        Res = null;
+    public boolean sendCMD(byte[] data) {
+        result = null;
         try {
-            mOutputStream.write(data);
-            mOutputStream.flush();
-            int i = TOut;
-            while (i > 0) {
-                Thread.sleep(500);
-                System.out.println("sleep 1s");
-                if (Res != null) return true;
-                i--;
+            if (mOutputStream != null) {
+                mOutputStream.write(data);
+                mOutputStream.flush();
+            } else {
+                return false;
             }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            Log.i(TAG, e.getMessage());
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**
-     * 获取返回结果
+     * 回去返回的报文字符串
      *
-     * @return
+     * @return string
      */
-    public String getRes() {
-        return Res;
+    public String getResult() {
+        return result;
     }
 
+    /**
+     * 读取串口数据
+     */
     private class ReadCOMThread extends Thread {
+
         @Override
         public void run() {
             int size;
             while (!isInterrupted()) {
                 try {
-                    byte[] buffer = new byte[16];
-                    if (mInputStream == null)
+                    byte[] buffer = new byte[25];
+                    if (mInputStream == null) {
                         break;
-                    mOutputStream.write(buffer);
+                    }
                     size = mInputStream.read(buffer);
                     if (size > 0) {
-                        Res = ByteUtil.hexBytesToString(buffer);
+                        Thread.sleep(500);
+                        onDataReceiverListener.onDataReceiver(buffer, size);
+                        result = ByteUtil.hexBytesToString(buffer);
                     }
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.i(TAG, e.getMessage());
                     break;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }

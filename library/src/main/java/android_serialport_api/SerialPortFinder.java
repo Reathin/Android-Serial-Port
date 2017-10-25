@@ -1,7 +1,5 @@
 package android_serialport_api;
 
-import android.util.Log;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -15,19 +13,17 @@ public class SerialPortFinder {
 
     private Vector<Driver> mDrivers = null;
 
-    Vector<Driver> getDrivers() throws IOException {
+    private Vector<Driver> getDrivers() throws IOException {
         if (mDrivers == null) {
             mDrivers = new Vector<>();
             LineNumberReader r = new LineNumberReader(new FileReader("/proc/tty/drivers"));
-            String l;
-            while ((l = r.readLine()) != null) {
-                // Issue 3:
-                // Since driver name may contain spaces, we do not extract
-                // driver name with split() 21
-                String drivername = l.substring(0, 0x15).trim();
-                String[] w = l.split(" +");
-                if ((w.length >= 5) && (w[w.length - 1].equals("serial"))) {
-                    Log.d(TAG, "Found new driver " + drivername + " on " + w[w.length - 4]);
+            String line;
+            while ((line = r.readLine()) != null) {
+                // 设备名称可能存在空格
+                // we do not extract driver name with split() 21
+                String drivername = line.substring(0, 0x15).trim();
+                String[] w = line.split(" +");
+                if ((w.length >= 5) && ("serial".equals(w[w.length - 1]))) {
                     mDrivers.add(new Driver(drivername, w[w.length - 4]));
                 }
             }
@@ -38,7 +34,7 @@ public class SerialPortFinder {
 
     public String[] getAllDevices() {
         Vector<String> devices = new Vector<>();
-        // Parse each driver
+        // 解析每个设备
         Iterator<Driver> itdriv;
         try {
             itdriv = getDrivers().iterator();
@@ -59,7 +55,6 @@ public class SerialPortFinder {
 
     public String[] getAllDevicesPath() {
         Vector<String> devices = new Vector<>();
-        // Parse each driver
         Iterator<Driver> itdriv;
         try {
             itdriv = getDrivers().iterator();
@@ -97,7 +92,6 @@ public class SerialPortFinder {
                 int i;
                 for (i = 0; i < files.length; i++) {
                     if (files[i].getAbsolutePath().startsWith(mDeviceRoot)) {
-                        Log.d(TAG, "Found new device: " + files[i]);
                         mDevices.add(files[i]);
                     }
                 }

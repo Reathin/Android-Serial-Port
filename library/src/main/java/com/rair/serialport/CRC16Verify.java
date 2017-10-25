@@ -42,7 +42,11 @@ public class CRC16Verify {
             0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040
     };
 
-    //查表法计算 CRC-16
+    /**
+     * 查表法计算 CRC-16
+     *
+     * @param data 代计算的字节
+     */
     private static int crcVal(byte[] data) {
         int Index;
         int nCRCData;
@@ -56,6 +60,12 @@ public class CRC16Verify {
         return (nCRCData >> 8 | nCRCData << 8);
     }
 
+    /**
+     * 计算crc16
+     *
+     * @param data 代计算的字节
+     * @return crc byte[]
+     */
     public static byte[] calcCrcBytes(byte[] data) {
         int crc = crcVal(data);
         String hexIdCrc = Integer.toHexString(crc).substring(0, 4);

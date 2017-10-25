@@ -14,8 +14,11 @@
 * CRC16Verify
 crc16校验算法
 
+* OnDataReceiverListener
+接受到回复后的回调监听
+
 ## 使用
-1、将aar包复制到libs目录下
+1、将library作为依赖导入
 2、如果使用时报错缺少so，请将so文件复制到libs下，并配置
 ```
  sourceSets {
@@ -48,9 +51,9 @@ dependencies {
 ### MachineControl
 控制类，打开关闭串口
 
-### SerialFinder
+### SerialFinder 可不使用
 串口操作类
-可枚举所有设备串口
+枚举所有设备串口
 
 <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=fe261afcf91e31f976ec47fc74c5cc0e1d29843423849dafd78967807aca9f92"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="Rair修仙开发交流" title="Rair修仙开发交流"></a>
 
