@@ -19,6 +19,7 @@ crc16校验算法
 
 ## 使用
 1、将library作为依赖导入
+
 2、如果使用时报错缺少so，请将so文件复制到libs下，并配置
 ```
  sourceSets {
@@ -48,9 +49,24 @@ dependencies {
 ### SerialPort
 串口操作类，对应jni方法。用于串口打开关闭，获取输入输出流，通过输入输出流发送报文和获取响应报文。
 
-### MachineControl
-控制类，打开关闭串口
 
+### MachineControl
+控制类，打开关闭串口，发送接受报文
+
+一般写成单例，在App中打开或关闭串口，不需要频繁的打开关闭
+```
+public MachineControl(String devName, int baudRate) 构造方法(串口设备名，波特率)
+
+boolean openCOM()  打开串口
+
+void setOnDataReceiverListener(OnDataReceiverListener onDataReceiverListener) 设置监听，接收回复的报文及数据长度
+
+void closeCOM() 关闭串口
+
+boolean sendCMD(byte[] data) 发送报文
+
+String getResult() 获取接受到的回复报文字符串
+```
 ### SerialFinder 可不使用
 串口操作类
 枚举所有设备串口
