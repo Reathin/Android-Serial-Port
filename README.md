@@ -14,6 +14,9 @@
 * CRC16Verify
 crc16校验算法
 
+* BCCVerify
+bcc异或校验
+
 * OnDataReceiverListener
 接受到回复后的回调监听
 
@@ -28,13 +31,7 @@ crc16校验算法
         }
 ```
 3、在module 的build.gradle中添加
-```
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
-}
-```
+
 ```
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -43,7 +40,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:26.+'
     testCompile 'junit:junit:4.12'
-    compile(name: 'serialport', ext: 'aar')
+    compile(':library')
 }
 ```
 ### SerialPort
