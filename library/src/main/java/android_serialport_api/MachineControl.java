@@ -58,7 +58,7 @@ public class MachineControl {
     public boolean openCOM() {
         String[] comList = getCOMList();
         for (String comname : comList) {
-            Log.i(TAG, "所有串口设备名" + comname);
+            Log.i(TAG, "所有串口设备名：" + comname);
         }
         if (mSerialPort == null) {
             try {
