@@ -61,8 +61,6 @@ void setOnDataReceiverListener(OnDataReceiverListener onDataReceiverListener) �
 void closeCOM() 关闭串口
 
 boolean sendCMD(byte[] data) 发送报文
-
-String getResult() 获取接受到的回复报文字符串
 ```
 ### SerialFinder 可不使用
 串口操作类
