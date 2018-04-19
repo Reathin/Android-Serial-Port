@@ -13,26 +13,6 @@ import java.io.OutputStream;
 public class SerialPort {
 
     private static final String TAG = "SerialPort";
-
-    static {
-        System.loadLibrary("serial_port");
-    }
-
-    /**
-     * 打开串口
-     *
-     * @param path     设备路径
-     * @param baudrate 波特率
-     * @param flags    标记
-     * @return FileDescriptor
-     */
-    private native static FileDescriptor open(String path, int baudrate, int flags);
-
-    /**
-     * 关闭串口
-     */
-    public native void close();
-
     /**
      * 不要删除或重命名字段mFd:原生方法close()使用了该字段
      */
@@ -40,12 +20,16 @@ public class SerialPort {
     private FileInputStream mFileInputStream;
     private FileOutputStream mFileOutputStream;
 
+    static {
+        System.loadLibrary("serial_port");
+    }
+
     public SerialPort(File device, int baudrate, int flags) throws SecurityException, IOException {
 
-        /**检查访问权限 */
+        /* 检查访问权限 */
         if (!device.canRead() || !device.canWrite()) {
             try {
-                /** 没有读/写权限，尝试对文件进行提权 */
+                /* 没有读/写权限，尝试对文件进行提权 */
                 Process su = Runtime.getRuntime().exec("/system/bin/su");
                 String cmd = "chmod 777 " + device.getAbsolutePath() + "\n" + "exit\n";
                 su.getOutputStream().write(cmd.getBytes());
@@ -65,6 +49,21 @@ public class SerialPort {
         mFileInputStream = new FileInputStream(mFd);
         mFileOutputStream = new FileOutputStream(mFd);
     }
+
+    /**
+     * 打开串口
+     *
+     * @param path     设备路径
+     * @param baudrate 波特率
+     * @param flags    标记
+     * @return FileDescriptor
+     */
+    private native static FileDescriptor open(String path, int baudrate, int flags);
+
+    /**
+     * 关闭串口
+     */
+    public native void close();
 
     /**
      * 获取输入输出流
