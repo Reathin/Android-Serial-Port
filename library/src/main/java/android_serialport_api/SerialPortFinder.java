@@ -11,7 +11,7 @@ public class SerialPortFinder {
 
     private static final String TAG = "SerialPort";
 
-    private Vector<Driver> mDrivers = null;
+    private Vector<Driver> mDrivers;
 
     private Vector<Driver> getDrivers() throws IOException {
         if (mDrivers == null) {
