@@ -20,7 +20,6 @@ public class SerialPortFinder {
             String line;
             while ((line = r.readLine()) != null) {
                 // 设备名称可能存在空格
-                // we do not extract driver name with split() 21
                 String drivername = line.substring(0, 0x15).trim();
                 String[] w = line.split(" +");
                 if ((w.length >= 5) && ("serial".equals(w[w.length - 1]))) {

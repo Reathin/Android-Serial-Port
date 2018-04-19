@@ -42,7 +42,7 @@ public class SerialPort {
 
     public SerialPort(File device, int baudrate, int flags) throws SecurityException, IOException {
 
-        /** 检查访问权限 */
+        /**检查访问权限 */
         if (!device.canRead() || !device.canWrite()) {
             try {
                 /** 没有读/写权限，尝试对文件进行提权 */

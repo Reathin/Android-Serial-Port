@@ -2,8 +2,7 @@ package android_serialport_api;
 
 import android.util.Log;
 
-import com.rair.serialport.ByteUtil;
-import com.rair.serialport.OnDataReceiverListener;
+import com.rairmmd.serialport.OnDataReceiverListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,15 +77,6 @@ public class MachineControl {
     }
 
     /**
-     * 设置回调监听
-     *
-     * @param onDataReceiverListener onDataReceiverListener
-     */
-    public void setOnDataReceiverListener(OnDataReceiverListener onDataReceiverListener) {
-        this.onDataReceiverListener = onDataReceiverListener;
-    }
-
-    /**
      * 关闭串口
      */
     public void closeCOM() {
@@ -99,18 +89,12 @@ public class MachineControl {
     }
 
     /**
-     * 解析后的结果
-     */
-    private String result;
-
-    /**
      * 发送报文
      *
      * @param data 报文
      * @return 是否成功
      */
     public boolean sendCMD(byte[] data) {
-        result = null;
         try {
             if (mOutputStream != null) {
                 mOutputStream.write(data);
@@ -126,41 +110,40 @@ public class MachineControl {
     }
 
     /**
-     * 回去返回的报文字符串
-     *
-     * @return string
-     */
-    public String getResult() {
-        return result;
-    }
-
-    /**
      * 读取串口数据
      */
     private class ReadCOMThread extends Thread {
 
         @Override
         public void run() {
-            int size;
             while (!isInterrupted()) {
                 try {
-                    byte[] buffer = new byte[25];
+                    byte[] buffer = new byte[24];
                     if (mInputStream == null) {
                         break;
                     }
-                    size = mInputStream.read(buffer);
+                    int size = mInputStream.read(buffer);
                     if (size > 0) {
                         Thread.sleep(500);
                         onDataReceiverListener.onDataReceiver(buffer, size);
-                        result = ByteUtil.hexBytesToString(buffer);
                     }
                 } catch (IOException e) {
                     Log.i(TAG, e.getMessage());
                     break;
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Log.i(TAG, e.getMessage());
                 }
             }
         }
     }
+
+    /**
+     * 设置回调监听
+     *
+     * @param onDataReceiverListener onDataReceiverListener
+     */
+    public void setOnDataReceiverListener(OnDataReceiverListener onDataReceiverListener) {
+        this.onDataReceiverListener = onDataReceiverListener;
+    }
+
 }

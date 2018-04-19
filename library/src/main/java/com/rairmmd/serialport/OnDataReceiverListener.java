@@ -1,10 +1,10 @@
-package com.rair.serialport;
+package com.rairmmd.serialport;
 
 /**
  * @author Rair
  * @date 2017/10/25
  * <p>
- * desc:
+ * desc:数据接收回调
  */
 
 public interface OnDataReceiverListener {

@@ -1,12 +1,13 @@
-package com.rair.serialport;
+package com.rairmmd.serialport;
 
 /**
- * Created by Rair on 2017/9/24.
- * Email:rairmmd@gmail.com
- * Author:Rair
+ * @author Rair
+ * @date 2017/9/24.
+ * <p>
+ * desc:CRC16校验
  */
-
 public class CRC16Verify {
+
     private static char[] CrcTbl = {
             0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
             0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,

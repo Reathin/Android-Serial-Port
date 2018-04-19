@@ -1,4 +1,4 @@
-package com.rair.serialport;
+package com.rairmmd.serialport;
 
 /**
  * @author Rair
