@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class MachineControl {
+public class SerialPortController {
 
-    private static final String TAG = "MachineControl";
+    private static final String TAG = "SerialPortController";
 
     private SerialPortFinder mSerialPortFinder;
 
@@ -33,7 +33,7 @@ public class MachineControl {
      *                 <p>
      *                 例如 devName = "/dev/ttyS3"，baudRate =9600。
      */
-    public MachineControl(String devName, int baudRate) {
+    public SerialPortController(String devName, int baudRate) {
         mSerialPortFinder = new SerialPortFinder();
         mDeviceName = devName;
         mBaudRate = baudRate;

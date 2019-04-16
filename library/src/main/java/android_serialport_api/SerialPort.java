@@ -13,23 +13,21 @@ import java.io.OutputStream;
 public class SerialPort {
 
     private static final String TAG = "SerialPort";
-    /**
-     * 不要删除或重命名字段mFd:原生方法close()使用了该字段
-     */
-    private FileDescriptor mFd;
-    private FileInputStream mFileInputStream;
-    private FileOutputStream mFileOutputStream;
+
 
     static {
         System.loadLibrary("serial_port");
     }
 
+    private FileInputStream mFileInputStream;
+    private FileOutputStream mFileOutputStream;
+
     public SerialPort(File device, int baudrate, int flags) throws SecurityException, IOException {
 
-        /* 检查访问权限 */
+        //检查访问权限
         if (!device.canRead() || !device.canWrite()) {
             try {
-                /* 没有读/写权限，尝试对文件进行提权 */
+                // 没有读/写权限，尝试对文件进行提权
                 Process su = Runtime.getRuntime().exec("/system/bin/su");
                 String cmd = "chmod 777 " + device.getAbsolutePath() + "\n" + "exit\n";
                 su.getOutputStream().write(cmd.getBytes());
@@ -41,7 +39,8 @@ public class SerialPort {
                 throw new SecurityException();
             }
         }
-        mFd = open(device.getAbsolutePath(), baudrate, flags);
+        //不要删除或重命名字段mFd:原生方法close()使用了该字段
+        FileDescriptor mFd = open(device.getAbsolutePath(), baudrate, flags);
         if (mFd == null) {
             Log.i(TAG, "open() return null");
             throw new IOException();

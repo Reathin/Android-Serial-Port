@@ -5,7 +5,7 @@ import android.util.Log;
 import com.rairmmd.serialport.ByteUtil;
 import com.rairmmd.serialport.OnDataReceiverListener;
 
-import android_serialport_api.MachineControl;
+import android_serialport_api.SerialPortController;
 
 /**
  * Created by Rair on 2017/9/25.
@@ -16,7 +16,7 @@ import android_serialport_api.MachineControl;
 public class Test {
 
     public static void main(String... args) {
-        MachineControl machineControl = new MachineControl("/dev/ttys", 9600);
+        SerialPortController machineControl = new SerialPortController("/dev/ttys", 9600);
         boolean openCOM = machineControl.openCOM();
         if (openCOM) {
             machineControl.setOnDataReceiverListener(new OnDataReceiverListener() {

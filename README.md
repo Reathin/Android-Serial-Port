@@ -41,12 +41,12 @@ dependencies {
 串口操作类，对应jni方法。用于串口打开关闭，获取输入输出流，通过输入输出流发送报文和获取响应报文。
 
 
-### MachineControl
+### SerialPortController
 控制类，打开关闭串口，发送接受报文
 
 一般写成单例，在App中打开或关闭串口，不需要频繁的打开关闭
 ```
-public MachineControl(String devName, int baudRate) 构造方法(串口设备名，波特率)
+public SerialPortController(String devName, int baudRate) 构造方法(串口设备名，波特率)
 
 boolean openCOM()  打开串口
 

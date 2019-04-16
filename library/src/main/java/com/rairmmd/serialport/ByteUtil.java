@@ -1,6 +1,7 @@
 package com.rairmmd.serialport;
 
 public class ByteUtil {
+
     private static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
     /**

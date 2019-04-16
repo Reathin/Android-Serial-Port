@@ -10,6 +10,8 @@ package com.rairmmd.serialport;
 public interface OnDataReceiverListener {
 
     /**
+     * 接收数据
+     *
      * @param buffer 收到的字节数组
      * @param size   长度
      */
