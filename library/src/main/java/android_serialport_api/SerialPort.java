@@ -10,10 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class SerialPort {
+class SerialPort {
 
     private static final String TAG = "SerialPort";
-
 
     static {
         System.loadLibrary("serial_port");
@@ -22,8 +21,7 @@ public class SerialPort {
     private FileInputStream mFileInputStream;
     private FileOutputStream mFileOutputStream;
 
-    public SerialPort(File device, int baudrate, int flags) throws SecurityException, IOException {
-
+    public SerialPort(File device, int baudRate, int flags) throws SecurityException, IOException {
         //检查访问权限
         if (!device.canRead() || !device.canWrite()) {
             try {
@@ -36,13 +34,14 @@ public class SerialPort {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                Log.e(TAG, e.getMessage());
                 throw new SecurityException();
             }
         }
         //不要删除或重命名字段mFd:原生方法close()使用了该字段
-        FileDescriptor mFd = open(device.getAbsolutePath(), baudrate, flags);
+        FileDescriptor mFd = open(device.getAbsolutePath(), baudRate, flags);
         if (mFd == null) {
-            Log.i(TAG, "open() return null");
+            Log.i(TAG, "open method return null");
             throw new IOException();
         }
         mFileInputStream = new FileInputStream(mFd);
@@ -53,11 +52,11 @@ public class SerialPort {
      * 打开串口
      *
      * @param path     设备路径
-     * @param baudrate 波特率
+     * @param baudRate 波特率
      * @param flags    标记
      * @return FileDescriptor
      */
-    private native static FileDescriptor open(String path, int baudrate, int flags);
+    private native static FileDescriptor open(String path, int baudRate, int flags);
 
     /**
      * 关闭串口
@@ -83,7 +82,8 @@ public class SerialPort {
             mFileInputStream.close();
             mFileOutputStream.close();
         } catch (IOException e) {
-            Log.i(TAG, e.getMessage());
+            e.printStackTrace();
+            Log.e(TAG, e.getMessage());
         }
         mFileInputStream = null;
         mFileOutputStream = null;

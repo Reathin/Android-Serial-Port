@@ -25,28 +25,35 @@ bcc异或校验
 
 2、如果使用时报错缺少so，请将so文件复制到libs下，并配置
 ```
- sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
+ndk {
+    //选择要添加的对应cpu类型的.so库。
+    abiFilters 'armeabi', 'armeabi-v7a', 'armeabi-v8a', 'x86', 'mips'
+}
+```
+
+```
+sourceSets {
+    main {
+        jniLibs.srcDirs = ['libs']
+}
 ```
 3、在module 的build.gradle中添加
 
 ```
 dependencies {
-    compile(':library')
+    implementation(':library')
 }
 ```
 ### SerialPort
 串口操作类，对应jni方法。用于串口打开关闭，获取输入输出流，通过输入输出流发送报文和获取响应报文。
 
 
-### SerialPortController
+### SerialPortManager
 控制类，打开关闭串口，发送接受报文
 
 一般写成单例，在App中打开或关闭串口，不需要频繁的打开关闭
 ```
-public SerialPortController(String devName, int baudRate) 构造方法(串口设备名，波特率)
+public SerialPortManager(String devName, int baudRate) 构造方法(串口设备名，波特率)
 
 boolean openCOM()  打开串口
 

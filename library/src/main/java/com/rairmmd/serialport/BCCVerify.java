@@ -16,8 +16,8 @@ public class BCCVerify {
     private static String bccVal(byte[] data) {
         String ret = "";
         byte[] BCC = new byte[1];
-        for (int i = 0; i < data.length; i++) {
-            BCC[0] = (byte) (BCC[0] ^ data[i]);
+        for (byte datum : data) {
+            BCC[0] = (byte) (BCC[0] ^ datum);
         }
         String hex = Integer.toHexString(BCC[0] & 0xFF);
         if (hex.length() == 1) {

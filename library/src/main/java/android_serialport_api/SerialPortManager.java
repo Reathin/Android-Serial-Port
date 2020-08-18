@@ -1,6 +1,7 @@
 package android_serialport_api;
 
 import android.util.Log;
+import android.view.ViewManager;
 
 import com.rairmmd.serialport.OnDataReceiverListener;
 
@@ -9,9 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class SerialPortController {
+public class SerialPortManager {
 
-    private static final String TAG = "SerialPortController";
+    private static final String TAG = "SerialPortManager";
 
     private SerialPortFinder mSerialPortFinder;
 
@@ -33,12 +34,33 @@ public class SerialPortController {
      *                 <p>
      *                 例如 devName = "/dev/ttyS3"，baudRate =9600。
      */
-    public SerialPortController(String devName, int baudRate) {
+    public SerialPortManager(String devName, int baudRate) {
         mSerialPortFinder = new SerialPortFinder();
         mDeviceName = devName;
         mBaudRate = baudRate;
         mSerialPort = null;
     }
+
+//    private SerialPortManager() {
+//        mSerialPortFinder = new SerialPortFinder();
+//        mSerialPort = null;
+//    }
+//
+//    private static class SerialPortManagerHolder {
+//        private static SerialPortManager instance = new SerialPortManager();
+//    }
+//
+//    public static SerialPortManager getInstance() {
+//        return SerialPortManagerHolder.instance;
+//    }
+//
+//    public void setDeviceName(String deviceName) {
+//        this.mDeviceName = deviceName;
+//    }
+//
+//    public void setBaudRate(int baudRate) {
+//        this.mBaudRate = baudRate;
+//    }
 
     /**
      * 枚举所有串口的设备名。
@@ -128,10 +150,10 @@ public class SerialPortController {
                         onDataReceiverListener.onDataReceiver(buffer, size);
                     }
                 } catch (IOException e) {
-                    Log.i(TAG, e.getMessage());
+                    Log.e(TAG, e.getMessage());
                     break;
                 } catch (InterruptedException e) {
-                    Log.i(TAG, e.getMessage());
+                    Log.e(TAG, e.getMessage());
                 }
             }
         }
